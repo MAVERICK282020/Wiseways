@@ -1,0 +1,57 @@
+# WiseWays on Kubernetes
+# 1. Create the secret first:
+#    kubectl create secret generic wiseways-secrets --from-literal=nvidia-api-key=<YOUR_KEY>
+# 2. Apply:
+#    kubectl apply -f k8s/wiseways.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wiseways
+  labels:
+    app: wiseways
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: wiseways
+  template:
+    metadata:
+      labels:
+        app: wiseways
+    spec:
+      containers:
+        - name: wiseways
+          image: maverick282020/wiseways:latest
+          ports:
+            - containerPort: 5000
+          env:
+            - name: NVIDIA_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: wiseways-secrets
+                  key: nvidia-api-key
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 5000
+            initialDelaySeconds: 20
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: 500m
+              memory: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wiseways
+spec:
+  type: ClusterIP
+  selector:
+    app: wiseways
+  ports:
+    - port: 80
+      targetPort: 5000

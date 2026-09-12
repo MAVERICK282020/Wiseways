@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WiseWays | AI Career & College Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass-morphism {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .roadmap-line::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #e5e7eb;
+            z-index: 0;
+        }
+        @keyframes pulse-subtle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        .loading-pulse { animation: pulse-subtle 2s infinite; }
+        .advice-gradient {
+            background: linear-gradient(135deg, #eff6ff 0%, #f8fafc 100%);
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+        .animate-float { animation: float 6s ease-in-out infinite; }
+        /* Custom toggle switch */
+        .dot { transition: all 0.3s ease-in-out; }
+        input:checked ~ .dot { transform: translateX(100%); background-color: #3b82f6; }
+        input:checked ~ .block { background-color: #dbeafe; }
+        
+        .timeline-container { position: relative; }
+        .timeline-container::after {
+            content: '';
+            position: absolute;
+            width: 2px;
+            background-color: #e2e8f0;
+            top: 0;
+            bottom: 0;
+            left: 19px;
+            margin-left: -1px;
+            z-index: 0;
+        }
+
+        /* Mic Animation */
+        @keyframes pulse-red {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+        .mic-active { animation: pulse-red 1.5s infinite; background-color: #ef4444 !important; }
+
+        .star-rating button { transition: color 0.2s; }
+        .star-rating button.active { color: #f59e0b; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen">
+
+    <!-- Global Toast Container -->
+    <div id="toast-container" class="fixed bottom-4 right-4 z-[110] flex flex-col space-y-2 pointer-events-none"></div>
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 glass-morphism shadow-sm px-6 py-4 flex justify-between items-center border-b border-slate-200">
+        <div class="flex items-center space-x-2 cursor-pointer" onclick="showSection('hero')">
+            <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">W</div>
+            <span class="text-2xl font-extrabold tracking-tight text-slate-800">Wise<span class="text-blue-600">Ways</span></span>
+        </div>
+        <div class="hidden md:flex space-x-8 font-medium text-slate-600">
+            <a href="#" onclick="showSection('hero')" class="hover:text-blue-600 transition">Home</a>
+            <a href="#" onclick="showSection('discovery')" class="hover:text-blue-600 transition">Find Colleges</a>
+            <a href="#" onclick="showSection('mentor')" class="hover:text-blue-600 transition">AI Mentor</a>
+            <a href="#" onclick="showSection('feedback')" class="hover:text-blue-600 transition">Feedback</a>
+            <a href="#" onclick="showSection('contact')" class="hover:text-blue-600 transition">Contact Us</a>
+        </div>
+        <button onclick="showSection('discovery')" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-full font-semibold transition shadow-md">Get Started</button>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero-section" class="relative pt-20 pb-32 px-6 overflow-hidden">
+        <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+            <div>
+                <span class="bg-blue-100 text-blue-700 px-4 py-1 rounded-full text-sm font-bold uppercase tracking-wider">AI-Powered Guidance</span>
+                <h1 class="text-5xl md:text-6xl font-black text-slate-900 mt-6 leading-tight">
+                    Smarter Decisions for your <span class="text-blue-600">Future Career.</span>
+                </h1>
+                <p class="text-lg text-slate-600 mt-6 max-w-lg">
+                    WiseWays goes beyond rankings. We map your college choices to real-world career outcomes, skill roadmaps, and ROI analysis.
+                </p>
+                <div class="mt-10 flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                    <button onclick="showSection('discovery')" class="px-8 py-4 bg-blue-600 text-white rounded-xl font-bold text-lg shadow-xl hover:bg-blue-700 transition transform hover:-translate-y-1">Start College Discovery</button>
+                    <button onclick="showSection('mentor')" class="px-8 py-4 bg-white border-2 border-slate-200 text-slate-700 rounded-xl font-bold text-lg hover:bg-slate-50 transition">Talk to AI Mentor</button>
+                </div>
+            </div>
+            <div class="relative flex justify-center items-center min-h-[400px]">
+                <!-- Animated Background Glows -->
+                <div class="absolute w-64 h-64 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse"></div>
+                <div class="absolute w-64 h-64 bg-purple-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse" style="animation-delay: 1.5s; transform: translate(40px, 40px);"></div>
+                
+                <!-- Floating Logo Container -->
+                <div class="relative z-10 glass-morphism p-10 rounded-[3rem] shadow-2xl animate-float border border-white/40">
+                    <div class="w-32 h-32 mx-auto bg-gradient-to-br from-blue-500 to-blue-700 rounded-3xl flex items-center justify-center shadow-inner relative overflow-hidden">
+                        <!-- Inner dynamic light accents -->
+                        <div class="absolute -top-8 -right-8 w-20 h-20 bg-blue-400 rounded-full opacity-50 blur-md"></div>
+                        <div class="absolute -bottom-8 -left-8 w-20 h-20 bg-blue-900 rounded-full opacity-50 blur-md"></div>
+                        <span class="text-white text-7xl font-black tracking-tighter relative z-10 drop-shadow-lg">W</span>
+                    </div>
+                    <div class="mt-8 text-center">
+                        <span class="text-4xl font-extrabold tracking-tight text-slate-800">Wise<span class="text-blue-600">Ways</span></span>
+                        <div class="mt-3 flex items-center justify-center space-x-2">
+                            <span class="relative flex h-3 w-3">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                            </span>
+                            <p class="text-slate-500 font-bold tracking-widest uppercase text-xs">AI Engine Active</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-24 bg-white px-6">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-slate-900">Innovation that Matters</h2>
+                <p class="text-slate-500 mt-2">Why WiseWays is different from traditional portals.</p>
+            </div>
+            <div class="grid md:grid-cols-4 gap-8">
+                <div class="p-6 bg-slate-50 rounded-2xl hover:shadow-lg transition">
+                    <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-1.447-.894L15 7m0 10V7m0 0l-6-3"></path></svg>
+                    </div>
+                    <h4 class="font-bold text-lg mb-2">Skill Roadmap</h4>
+                    <p class="text-sm text-slate-600">Every college is a different journey. See exactly what skills you'll need.</p>
+                </div>
+                <div class="p-6 bg-slate-50 rounded-2xl hover:shadow-lg transition">
+                    <div class="w-12 h-12 bg-green-100 text-green-600 rounded-xl flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <h4 class="font-bold text-lg mb-2">Reality Score</h4>
+                    <p class="text-sm text-slate-600">Compare fees vs placement packages to calculate the real value of your degree.</p>
+                </div>
+                <div class="p-6 bg-slate-50 rounded-2xl hover:shadow-lg transition">
+                    <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+                    </div>
+                    <h4 class="font-bold text-lg mb-2">AI Career Mentor</h4>
+                    <p class="text-sm text-slate-600">Get personalized advice on branches, exams, and future career trends.</p>
+                </div>
+                <div class="p-6 bg-slate-50 rounded-2xl hover:shadow-lg transition">
+                    <div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-xl flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                    </div>
+                    <h4 class="font-bold text-lg mb-2">Outcome Prediction</h4>
+                    <p class="text-sm text-slate-600">Predict possible career paths and top recruiters specifically for you.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Discovery Section (College Recommendation) -->
+    <section id="discovery-section" class="hidden py-20 px-6 bg-slate-50 min-h-screen">
+        <div class="max-w-5xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-black text-slate-900">College Prediction Engine</h2>
+                <p class="text-slate-500 mt-2">Enter your rank and category details for a strategic match.</p>
+            </div>
+            
+            <!-- Discovery Form -->
+            <div id="discovery-form" class="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-xl border border-slate-200">
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-widest">Entrance Rank (CRL)</label>
+                        <input type="number" id="rank-input" placeholder="e.g. 15000" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-widest">Category</label>
+                        <select id="category-input" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition">
+                            <option value="General">General</option>
+                            <option value="OBC">OBC-NCL</option>
+                            <option value="SC">SC</option>
+                            <option value="ST">ST</option>
+                            <option value="EWS">EWS</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-widest">Category Rank</label>
+                        <input type="number" id="category-rank-input" placeholder="e.g. 4500" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-widest">City Preference</label>
+                        <input type="text" id="area-input" placeholder="e.g. Bangalore, Pune" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-widest">Target Budget</label>
+                        <select id="budget-input" class="w-full p-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition">
+                            <option value="5-10">5 Lakh - 10 Lakh</option>
+                            <option value="10-20">10 Lakh - 20 Lakh</option>
+                            <option value="20-40">20 Lakh - 40 Lakh</option>
+                            <option value="40+">40 Lakh +</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-widest">Counselling Board</label>
+                        <select id="counselling-input" class="w-full p-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition">
+                            <option value="any">Any / Open</option>
+                            <option value="josaa">JOSAA / CSAB</option>
+                            <option value="jac">JAC Delhi</option>
+                            <option value="mhtcet">MHT-CET (Maharashtra)</option>
+                            <option value="comedk">COMEDK / KCET</option>
+                            <option value="aktu">UPTAC / AKTU</option>
+                        </select>
+                    </div>
+                    <div class="md:col-span-1 flex items-center space-x-4 p-4 bg-blue-50 rounded-xl border border-dashed border-blue-200">
+                        <label class="flex items-center cursor-pointer">
+                            <div class="relative">
+                                <input type="checkbox" id="direct-admission" class="sr-only">
+                                <div class="block bg-slate-200 w-12 h-7 rounded-full transition"></div>
+                                <div class="dot absolute left-1 top-1 bg-white w-5 h-5 rounded-full transition"></div>
+                            </div>
+                            <div class="ml-3 text-slate-700 font-bold text-xs uppercase tracking-widest">Direct Admission</div>
+                        </label>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-widest">Interests & Branch Goals</label>
+                        <textarea id="interest-input" rows="2" placeholder="e.g., Interested in AI, prefer modern infrastructure and active tech clubs." class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition"></textarea>
+                    </div>
+                </div>
+                <button onclick="generateRecommendations()" id="generate-btn" class="w-full mt-10 py-5 bg-blue-600 text-white rounded-[2rem] font-black text-xl shadow-xl hover:bg-blue-700 transition active:scale-[0.98]">Analyze & Recommend</button>
+            </div>
+
+            <!-- Loading State -->
+            <div id="loading-results" class="hidden mt-12 text-center">
+                <div class="flex flex-col items-center">
+                    <div class="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mb-4"></div>
+                    <p class="text-slate-600 font-medium loading-pulse">AI is validating counselling dates and area-specific ROIs...</p>
+                </div>
+            </div>
+
+            <!-- Results Container -->
+            <div id="results-container" class="mt-12 space-y-8 hidden">
+                <!-- Results injected here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- AI Career Mentor Section -->
+    <section id="mentor-section" class="hidden py-20 px-6 bg-slate-900 min-h-screen">
+        <div class="max-w-4xl mx-auto flex flex-col h-[80vh]">
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h2 class="text-3xl font-black text-white">AI Career Mentor</h2>
+                    <p class="text-slate-400">Ask or speak your career doubts.</p>
+                </div>
+                <!-- TTS Toggle -->
+                <div class="flex items-center space-x-3 bg-slate-800 px-4 py-2 rounded-full border border-slate-700">
+                    <span class="text-xs text-slate-300 font-bold uppercase tracking-widest">AI Voice</span>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="tts-toggle" class="sr-only" checked>
+                        <div class="w-11 h-6 bg-slate-700 rounded-full border border-slate-600 block"></div>
+                        <div class="dot absolute left-1 top-1 bg-slate-400 w-4 h-4 rounded-full transition-all"></div>
+                    </label>
+                </div>
+            </div>
+
+            <div id="chat-history" class="flex-grow bg-slate-800 rounded-3xl p-6 overflow-y-auto space-y-4 border border-slate-700 shadow-inner">
+                <div class="flex justify-start">
+                    <div class="bg-slate-700 text-slate-200 p-4 rounded-2xl rounded-tl-none max-w-[80%]">
+                        Hello! I am WiseWays AI Mentor. I can help you understand career trends, salary expectations, or compare branches. How can I guide you today?
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 flex space-x-4 items-end">
+                <div class="flex-grow relative">
+                    <textarea id="mentor-input" rows="1" placeholder="Type or speak your question..." class="w-full bg-slate-800 border border-slate-700 text-white p-4 pr-14 rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none resize-none transition-all"></textarea>
+                    <button id="mic-btn" onclick="toggleSTT()" class="absolute right-3 bottom-3 p-2 bg-slate-700 text-slate-300 rounded-xl hover:bg-slate-600 transition-all flex items-center justify-center">
+                        <svg id="mic-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+                    </button>
+                </div>
+                <button onclick="mentorChat()" id="mentor-send" class="bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-2xl shadow-lg transition h-[56px] flex items-center justify-center aspect-square">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Feedback Section -->
+    <section id="feedback-section" class="hidden py-24 px-6 bg-slate-50 min-h-screen">
+        <div class="max-w-3xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-black text-slate-900">Your Opinion Matters</h2>
+                <p class="text-slate-500 mt-2">Help us refine our AI decision-making engine.</p>
+            </div>
+
+            <div id="feedback-form-container" class="bg-white p-10 rounded-3xl shadow-xl border border-slate-200">
+                <div class="space-y-8">
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-3 uppercase tracking-wider">How accurate were the suggestions?</label>
+                        <div class="star-rating flex space-x-2 text-3xl text-slate-300">
+                            <button onclick="setRating(1)" class="hover:scale-110 transition">★</button>
+                            <button onclick="setRating(2)" class="hover:scale-110 transition">★</button>
+                            <button onclick="setRating(3)" class="hover:scale-110 transition">★</button>
+                            <button onclick="setRating(4)" class="hover:scale-110 transition">★</button>
+                            <button onclick="setRating(5)" class="hover:scale-110 transition">★</button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-wider">Additional Comments</label>
+                        <textarea id="feedback-message" rows="4" placeholder="Tell us how we can make WiseWays better for you..." class="w-full p-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition"></textarea>
+                    </div>
+                    <button onclick="submitFeedback()" class="w-full py-4 bg-blue-600 text-white rounded-xl font-bold text-lg shadow-lg hover:bg-blue-700 transition">Submit Feedback</button>
+                </div>
+            </div>
+
+            <div id="feedback-success" class="hidden bg-green-50 border-2 border-green-200 p-8 rounded-3xl text-center">
+                <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                </div>
+                <h3 class="text-2xl font-black text-green-800">Thank You!</h3>
+                <p class="text-green-700 mt-2">Your feedback helps us guide more students to their ideal careers.</p>
+                <button onclick="resetFeedbackForm()" class="mt-6 text-green-600 font-bold underline">Send another response</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact-section" class="hidden py-24 px-6 bg-white min-h-screen">
+        <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-16">
+            <div>
+                <h2 class="text-4xl font-black text-slate-900 leading-tight">Get in touch with the <span class="text-blue-600">WiseWays Team</span></h2>
+                <p class="text-slate-600 mt-6 text-lg">Have specific questions about a college partner or technical issues? We're here to help.</p>
+                
+                <div class="mt-12 space-y-8">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-800">Support Email</h4>
+                            <p class="text-slate-500 font-medium">support@wiseways.ai</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="contact-form-container" class="bg-slate-50 p-10 rounded-3xl border border-slate-200">
+                <div class="space-y-6">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 mb-2 uppercase">Full Name</label>
+                            <input type="text" placeholder="John Doe" class="w-full p-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 mb-2 uppercase">Email Address</label>
+                            <input type="email" placeholder="john@example.com" class="w-full p-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-2 uppercase">Subject</label>
+                        <input type="text" placeholder="Partnership Inquiries" class="w-full p-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-2 uppercase">Your Message</label>
+                        <textarea rows="4" placeholder="How can we help you?" class="w-full p-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition"></textarea>
+                    </div>
+                    <button onclick="submitContact()" class="w-full py-4 bg-slate-900 text-white rounded-xl font-bold text-lg shadow-lg hover:bg-slate-800 transition">Send Message</button>
+                </div>
+            </div>
+
+            <div id="contact-success" class="hidden bg-slate-900 text-white p-10 rounded-3xl text-center flex flex-col items-center justify-center">
+                <h3 class="text-3xl font-black">Message Sent!</h3>
+                <p class="text-slate-400 mt-2">We've received your inquiry and our team will get back to you within 24 hours.</p>
+                <button onclick="resetContactForm()" class="mt-8 text-blue-400 font-bold hover:underline">Back to form</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modals (Roadmap & Predictor) -->
+    <div id="roadmap-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeModals()"></div>
+        <div class="bg-white rounded-3xl w-full max-w-2xl overflow-hidden relative z-10 shadow-2xl flex flex-col">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <div class="flex flex-col">
+                    <h3 class="font-bold text-xl text-slate-800" id="roadmap-title">College Skill Roadmap</h3>
+                    <p class="text-xs text-blue-600 font-bold uppercase tracking-tight">4-Year Strategic Learning Path</p>
+                </div>
+                <button onclick="closeModals()" class="p-2 hover:bg-slate-200 rounded-full transition">&times;</button>
+            </div>
+            <div class="p-8 overflow-y-auto timeline-container flex-grow max-h-[60vh]" id="roadmap-content">
+                <!-- Steps injected here -->
+            </div>
+            <div class="p-6 bg-slate-50 border-t border-slate-100">
+                <button id="roadmap-mentor-btn" class="w-full py-4 bg-green-600 text-white rounded-xl font-bold hover:bg-green-700 transition shadow-lg flex items-center justify-center space-x-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+                    <span>Discuss this Roadmap & Future Trends</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const apiKey = ""; 
+        let currentRating = 0;
+        
+        // --- Custom Toast Notification System ---
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+            const toast = document.createElement('div');
+            
+            let bgColor = 'bg-slate-800';
+            if (type === 'error') bgColor = 'bg-red-600';
+            else if (type === 'success') bgColor = 'bg-green-600';
+            else if (type === 'info') bgColor = 'bg-blue-600';
+            
+            toast.className = `${bgColor} text-white px-6 py-3 rounded-xl shadow-lg transform transition-all duration-300 translate-y-10 opacity-0 pointer-events-auto flex items-center space-x-3`;
+            toast.innerHTML = `<span class="font-medium text-sm">${message}</span>`;
+            
+            container.appendChild(toast);
+
+            // Trigger animation in
+            setTimeout(() => {
+                toast.classList.remove('translate-y-10', 'opacity-0');
+            }, 10);
+
+            // Animate out and remove
+            setTimeout(() => {
+                toast.classList.add('translate-y-10', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // --- Accessibility Vars ---
+        const synth = window.speechSynthesis;
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        let recognition = null;
+        let isRecording = false;
+
+        if (SpeechRecognition) {
+            recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.lang = 'en-IN';
+            
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                document.getElementById('mentor-input').value = transcript;
+                stopSTTEffect();
+            };
+
+            recognition.onerror = () => stopSTTEffect();
+            recognition.onend = () => stopSTTEffect();
+        }
+
+        function toggleSTT() {
+            if (!recognition) return showToast("Speech recognition not supported in this browser.", "error");
+            if (isRecording) {
+                recognition.stop();
+            } else {
+                startSTTEffect();
+                recognition.start();
+            }
+        }
+
+        function startSTTEffect() {
+            isRecording = true;
+            document.getElementById('mic-btn').classList.add('mic-active');
+            document.getElementById('mentor-input').placeholder = "Listening...";
+        }
+
+        function stopSTTEffect() {
+            isRecording = false;
+            document.getElementById('mic-btn').classList.remove('mic-active');
+            document.getElementById('mentor-input').placeholder = "Type or speak your question...";
+        }
+
+        function speakText(text) {
+            const ttsEnabled = document.getElementById('tts-toggle').checked;
+            if (!ttsEnabled || !synth) return;
+            
+            synth.cancel(); // Stop current speech
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = 0.95;
+            utterance.pitch = 1;
+            
+            const voices = synth.getVoices();
+            const preferredVoice = voices.find(v => v.lang.includes('en') && v.name.includes('Google')) || voices[0];
+            if (preferredVoice) utterance.voice = preferredVoice;
+
+            synth.speak(utterance);
+        }
+
+        // --- Core Logic ---
+        function showSection(section) {
+            const sections = ['hero-section', 'discovery-section', 'mentor-section', 'feedback-section', 'contact-section'];
+            sections.forEach(s => document.getElementById(s).classList.add('hidden'));
+            
+            const activeSectionId = section + '-section';
+            if (document.getElementById(activeSectionId)) {
+                document.getElementById(activeSectionId).classList.remove('hidden');
+            }
+            
+            window.scrollTo(0,0);
+        }
+
+        function closeModals() {
+            document.getElementById('roadmap-modal').classList.add('hidden');
+        }
+
+        async function fetchAI(prompt, systemInstruction) {
+    const url = `http://localhost:5000/ask`; 
+    
+    try {
+        const response = await fetch(url, { 
+            method: 'POST', 
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                query: `${systemInstruction}\n\nIMPORTANT: Respond ONLY with a raw JSON object. Do not include any conversational text or markdown blocks.\n\nUser Query: ${prompt}` 
+            }) 
+        });
+
+        const result = await response.json();
+        let text = result.response.trim();
+
+        console.log("Raw AI Response:", text); // Debugging ke liye console mein dekho
+
+        // Step 1: Clean Markdown (if AI sent ```json ... ```)
+        text = text.replace(/```json/g, "").replace(/```/g, "").trim();
+
+        // Step 2: Use Regex to find the FIRST { and LAST }
+        // Isse agar AI ne aage peeche kuch likha bhi hai, toh sirf JSON bahar aayega
+        const jsonMatch = text.match(/\{[\s\S]*\}/);
+        
+        if (!jsonMatch) {
+            console.error("AI Response did not contain a JSON object:", text);
+            throw new Error("Invalid AI Response format");
+        }
+
+        const cleanJson = jsonMatch[0];
+        return JSON.parse(cleanJson);
+
+    } catch (e) {
+        console.error("JSON Parsing failed. Error:", e);
+        throw e; // Isse "AI engine is busy" wala toast trigger hoga
+    }
+}
+        async function generateRecommendations() {
+            const rank = document.getElementById('rank-input').value;
+            const category = document.getElementById('category-input').value;
+            const categoryRank = document.getElementById('category-rank-input').value;
+            const budget = document.getElementById('budget-input').value;
+            const interests = document.getElementById('interest-input').value;
+            const area = document.getElementById('area-input').value;
+            const counselling = document.getElementById('counselling-input').value;
+            const direct = document.getElementById('direct-admission').checked;
+
+            if (!rank || !interests) {
+                showToast("Please fill in your entrance rank and interests.", "error");
+                return;
+            }
+
+            document.getElementById('discovery-form').classList.add('opacity-50', 'pointer-events-none');
+            document.getElementById('loading-results').classList.remove('hidden');
+            document.getElementById('results-container').classList.add('hidden');
+
+            const system = `You are WiseWays AI Recommendation engine. Suggest 5 real or realistic colleges based on student preferences.
+            Consider Category (${category}) and Category Rank (${categoryRank}) for Indian reservation-based seat allotment simulations.
+            Return JSON: { 
+                colleges: [{ name, location, roiScore, avgPackage, fees, careers: [], roadmap: [], admissionType: "Entrance"|"Direct", counsellingInfo: "" }], 
+                finalAdvice: { bestFitCollege, whyBestFit, tradeOffSummary } 
+            }`;
+
+            const prompt = `Student Details: Rank: ${rank}, Category: ${category}, Category Rank: ${categoryRank}, Budget: ${budget}, Preference: ${area}, Counselling: ${counselling}, Allow Direct Admission: ${direct}, Interests: ${interests}`;
+
+            try {
+                const data = await fetchAI(prompt, system);
+                renderResults(data);
+            } catch (err) {
+                showToast("AI Engine is busy. Please try again.", "error");
+            } finally {
+                document.getElementById('discovery-form').classList.remove('opacity-50', 'pointer-events-none');
+                document.getElementById('loading-results').classList.add('hidden');
+            }
+        }
+
+        function renderResults(data) {
+            const container = document.getElementById('results-container');
+            container.innerHTML = '';
+            container.classList.remove('hidden');
+
+            const adviceDiv = document.createElement('div');
+            adviceDiv.className = "advice-gradient p-8 rounded-3xl border-2 border-blue-200 shadow-lg mb-12 relative overflow-hidden";
+            adviceDiv.innerHTML = `
+                <div class="relative z-10">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <span class="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold uppercase">WiseWays AI Choice</span>
+                        <h4 class="text-xl font-black text-slate-800">Strategic Decision Advice</h4>
+                    </div>
+                    <h2 class="text-3xl font-black text-blue-700 mb-2">${data.finalAdvice.bestFitCollege}</h2>
+                    <p class="text-slate-700 font-medium leading-relaxed mb-4">${data.finalAdvice.whyBestFit}</p>
+                    <div class="bg-white/60 p-4 rounded-xl border border-blue-100">
+                        <p class="text-sm font-bold text-slate-500 uppercase mb-1">Counselling & Area Comparison</p>
+                        <p class="text-slate-600 text-sm">${data.finalAdvice.tradeOffSummary}</p>
+                    </div>
+                </div>
+            `;
+            container.appendChild(adviceDiv);
+
+            data.colleges.forEach(col => {
+                const isDirect = col.admissionType === 'Direct';
+                const card = document.createElement('div');
+                card.className = "bg-white p-8 rounded-3xl shadow-xl border border-slate-200 group hover:border-blue-300 transition-all mb-8";
+                card.innerHTML = `
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+                        <div>
+                            <div class="flex items-center space-x-2 mb-1">
+                                <h3 class="text-2xl font-black text-slate-800">${col.name}</h3>
+                                ${isDirect ? '<span class="bg-purple-100 text-purple-700 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-tighter border border-purple-200">Direct Entry Available</span>' : ''}
+                            </div>
+                            <p class="text-slate-500 font-medium">${col.location} • <span class="text-blue-600 text-sm font-bold">${col.counsellingInfo}</span></p>
+                        </div>
+                        <div class="mt-4 md:mt-0 flex flex-col items-center">
+                            <span class="text-xs font-black uppercase text-slate-400 mb-1">Reality Score</span>
+                            <div class="w-16 h-16 rounded-full border-4 border-green-500 flex items-center justify-center text-xl font-bold text-green-600 bg-green-50">
+                                ${col.roiScore}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 gap-4 mb-8">
+                        <div class="bg-blue-50 p-4 rounded-2xl">
+                            <p class="text-xs font-bold text-blue-600 uppercase">Avg. Package</p>
+                            <p class="text-2xl font-black text-blue-800">₹${col.avgPackage}</p>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-2xl">
+                            <p class="text-xs font-bold text-slate-500 uppercase">Total Fees</p>
+                            <p class="text-2xl font-black text-slate-800">₹${col.fees}</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="border-t pt-6 grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <button onclick="openRoadmap('${col.name}', ${JSON.stringify(col.roadmap).replace(/"/g, '&quot;')})" class="py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition shadow-md text-sm">View Skill Roadmap</button>
+                            <button onclick="showToast('Outcome: Targeted specifically at ${col.careers[0]}.', 'info')" class="py-3 bg-slate-800 text-white rounded-xl font-bold hover:bg-slate-900 transition text-sm">Career Outcome</button>
+                            <button onclick="askMentorAboutCollege('${col.name}')" class="py-3 bg-green-600 text-white rounded-xl font-bold hover:bg-green-700 transition shadow-md text-sm">Discuss with AI Mentor</button>
+                        </div>
+                        <p class="text-center text-xs text-slate-400 font-medium italic">Predicted Recruiters: ${col.careers.join(' • ')}</p>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+            container.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function askMentorAboutCollege(collegeName) {
+            showSection('mentor');
+            const input = document.getElementById('mentor-input');
+            input.value = `I'm interested in ${collegeName}. Can you tell me more about its campus culture, industry tie-ups, and if it's a good choice for my career goals?`;
+            setTimeout(() => mentorChat(), 500);
+        }
+
+        function openRoadmap(name, steps) {
+            const modal = document.getElementById('roadmap-modal');
+            const title = document.getElementById('roadmap-title');
+            const content = document.getElementById('roadmap-content');
+            const discussBtn = document.getElementById('roadmap-mentor-btn');
+            
+            title.innerText = `Skill Roadmap for ${name}`;
+            content.innerHTML = '';
+            
+            steps.forEach((step, idx) => {
+                const div = document.createElement('div');
+                div.className = "relative z-10 flex items-start space-x-6 mb-10";
+                div.innerHTML = `
+                    <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold flex-shrink-0 shadow-lg relative z-10 border-4 border-white">
+                        ${idx + 1}
+                    </div>
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex-grow hover:shadow-md transition">
+                        <h4 class="font-bold text-slate-800 text-lg mb-1">Year ${idx + 1} Focus</h4>
+                        <p class="text-slate-600 text-sm leading-relaxed">${step}</p>
+                    </div>
+                `;
+                content.appendChild(div);
+            });
+
+            discussBtn.onclick = () => {
+                showSection('mentor');
+                const input = document.getElementById('mentor-input');
+                input.value = `I just reviewed the roadmap for ${name}. Let's discuss this 4-year plan and what future skills I should focus on for a long-term career.`;
+                closeModals();
+                setTimeout(() => mentorChat(), 500);
+            };
+            
+            modal.classList.remove('hidden');
+        }
+
+        async function mentorChat() {
+    const input = document.getElementById('mentor-input');
+    const history = document.getElementById('chat-history');
+    const query = input.value.trim();
+    
+    if (!query) return;
+    
+    // 1. User ka message screen par dikhao
+    const userBubble = document.createElement('div');
+    userBubble.className = "flex justify-end mb-4";
+    userBubble.innerHTML = `<div class="bg-blue-600 text-white p-4 rounded-2xl rounded-tr-none max-w-[80%] shadow-lg">${query}</div>`;
+    history.appendChild(userBubble);
+    input.value = '';
+    history.scrollTop = history.scrollHeight;
+
+    // 2. System Instruction (AI ko batane ke liye ki wo mentor hai)
+    const system = "You are WiseWays AI Career Mentor. Use basic HTML like <b>, <ul>, <li>. Be professional yet friendly and use emojis. Respond in a way that is easy to read.";
+    
+    try {
+        // 3. Flask Server (app.py) ko call karo
+        const res = await fetch('http://localhost:5000/ask', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                query: `${system}\n\nStudent asks: ${query}` 
+            })
+        });
+        
+        if (!res.ok) throw new Error("Server down");
+
+        const data = await res.json();
+        const aiMsg = data.response; // Flask se response le rahe hain
+        
+        // 4. AI ka message screen par dikhao
+        const aiBubble = document.createElement('div');
+        aiBubble.className = "flex justify-start mb-4";
+        aiBubble.innerHTML = `<div class="bg-slate-700 text-slate-200 p-4 rounded-2xl rounded-tl-none max-w-[80%] shadow-md">${aiMsg}</div>`;
+        history.appendChild(aiBubble);
+        
+        // 5. Voice output (optional)
+        speakText(aiMsg);
+        
+    } catch (e) {
+        console.error("Mentor Chat Error:", e);
+        const errBubble = document.createElement('div');
+        errBubble.className = "flex justify-start mb-4";
+        errBubble.innerHTML = `<div class="bg-red-900/30 text-red-300 p-4 rounded-2xl max-w-[80%]">Server connect nahi ho pa raha. Check karo ki app.py terminal mein chal raha hai!</div>`;
+        history.appendChild(errBubble);
+    }
+    history.scrollTop = history.scrollHeight;
+  }
+
+        function setRating(n) {
+            currentRating = n;
+            const stars = document.querySelectorAll('.star-rating button');
+            stars.forEach((s, idx) => {
+                if (idx < n) s.classList.add('active');
+                else s.classList.remove('active');
+            });
+        }
+
+        function submitFeedback() {
+            document.getElementById('feedback-form-container').classList.add('hidden');
+            document.getElementById('feedback-success').classList.remove('hidden');
+        }
+
+        function resetFeedbackForm() {
+            setRating(0);
+            document.getElementById('feedback-message').value = '';
+            document.getElementById('feedback-form-container').classList.remove('hidden');
+            document.getElementById('feedback-success').classList.add('hidden');
+        }
+
+        function submitContact() {
+            document.getElementById('contact-form-container').classList.add('hidden');
+            document.getElementById('contact-success').classList.remove('hidden');
+        }
+
+        function resetContactForm() {
+            document.getElementById('contact-form-container').classList.remove('hidden');
+            document.getElementById('contact-success').classList.add('hidden');
+        }
+
+        document.getElementById('mentor-input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                mentorChat();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+target/
+.git/
+.github/
+.vscode/
+assets/
+upload.gitignore
+test-api.http
+README.md
+uptac.csv

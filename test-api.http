@@ -1,0 +1,57 @@
+### Test 1: Home Endpoint
+GET http://localhost:5000/
+
+###
+
+### Test 2: Ask AI
+POST http://localhost:5000/ask
+Content-Type: application/json
+
+{
+  "query": "What is JEE Advanced?"
+}
+
+###
+
+### Test 3: Get College Recommendations
+POST http://localhost:5000/recommend
+Content-Type: application/json
+
+{
+  "rank": 5000,
+  "categoryRank": "",
+  "branch": "Computer Science and Engineering",
+  "area": "",
+  "budget": "any",
+  "counselling": "any"
+}
+
+###
+
+### Test 4: Recommendations with Budget Filter
+POST http://localhost:5000/recommend
+Content-Type: application/json
+
+{
+  "rank": 10000,
+  "categoryRank": "",
+  "branch": "Mechanical Engineering",
+  "area": "",
+  "budget": "10-20",
+  "counselling": "any"
+}
+
+###
+
+### Test 5: With Category Rank
+POST http://localhost:5000/recommend
+Content-Type: application/json
+
+{
+  "rank": 15000,
+  "categoryRank": "3000",
+  "branch": "Electronics and Communication Engineering",
+  "area": "Mumbai",
+  "budget": "any",
+  "counselling": "any"
+}

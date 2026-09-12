@@ -1,0 +1,18 @@
+target/
+.vscode/
+.idea/
+*.iml
+data/
+*.log
+
+# unused dataset snapshots (kept locally, not part of the app)
+Book2.csv
+Book3.csv
+Book4.csv
+uptac.csv
+
+# local tooling artifacts
+.github/java-upgrade/
+.github/modernize/
+upload.gitignore
+.DS_Store
